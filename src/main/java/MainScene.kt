@@ -2,6 +2,7 @@ import com.github.davidmoten.rx2.file.Files
 import com.sun.nio.file.SensitivityWatchEventModifier
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.control.Label
 import javafx.stage.FileChooser
@@ -13,22 +14,20 @@ import java.util.concurrent.TimeUnit
 class MainScene {
 
     lateinit var stage: Stage
-    lateinit var hwpParser: HwpParser
-    lateinit var htmlWriter: HtmlWriter
-    lateinit var hwpReader: HwpReader
+    lateinit var basicParser: BasicParser
+    lateinit var basicWriter: BasicWriter
+    lateinit var basicReader: BasicReader
 
     private var ref: Optional<Disposable> = Optional.empty()
 
     @FXML
-    private lateinit var hwpLabel: Label
+    private lateinit var sourceLabel: Label
 
     @FXML
-    private lateinit var htmlLabel: Label
+    private lateinit var destinationLabel: Label
 
     @FXML
-    fun uploadClicked() {
-        hwpLabel.text = "Upload Button clicked!"
-    }
+    fun uploadClicked() {}
 
     @FXML
     fun watchFileClicked() {
@@ -44,8 +43,8 @@ class MainScene {
                 path.removeRange(path.indexOfLast { it == '.' }, path.length).plus(".html")
             }
 
-            hwpLabel.text = hwpPath
-            htmlLabel.text = htmlPath
+            sourceLabel.text = hwpPath
+            destinationLabel.text = htmlPath
 
             val disposable = Files.watch(file)
                 .nonBlocking()
@@ -54,7 +53,11 @@ class MainScene {
                 .build()
                 .debounce(500, TimeUnit.MILLISECONDS, Schedulers.io())
                 .subscribe {
-                    htmlWriter.create(File(htmlPath), hwpParser.parse(hwpReader.read(file)))
+                    basicWriter.create(File(htmlPath), basicParser.parse(basicReader.read(file)))
+
+                    Platform.runLater {
+                        destinationLabel.text = "Updated"
+                    }
                 }
 
             ref.ifPresent { it.dispose() }

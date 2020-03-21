@@ -15,22 +15,22 @@ class MainStage : Application() {
 
         loader.getController<MainScene>().also {
             it.stage = stage
-            it.hwpReader = object : HwpReader {
-                override fun read(hwpFile: File): String {
-                    return "Read the ${hwpFile.absolutePath}"
+            it.basicReader = object : BasicReader {
+                override fun read(file: File): String {
+                    return "Source file path ${file.absolutePath}"
                 }
             }
 
-            it.hwpParser = object : HwpParser {
+            it.basicParser = object : BasicParser {
                 override fun parse(contents: String): String {
-                    return "Parsed Hwp: $contents"
+                    return contents
                 }
             }
 
-            it.htmlWriter = object : HtmlWriter {
-                override fun create(htmlFile: File, contents: String) {
-                    println("HTML File Path: ${htmlFile.absolutePath}")
-                    println("Parsed contents for HTML: $contents")
+            it.basicWriter = object : BasicWriter {
+                override fun create(file: File, contents: String) {
+                    println("Destination file path: ${file.absolutePath}")
+                    println("Parsed contents: $contents")
                 }
             }
         }

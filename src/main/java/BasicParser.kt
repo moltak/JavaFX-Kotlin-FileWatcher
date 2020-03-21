@@ -1,3 +1,3 @@
-interface HwpParser {
+interface BasicParser {
     fun parse(contents: String): String
 }

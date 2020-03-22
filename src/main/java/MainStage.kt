@@ -5,6 +5,9 @@ import javafx.scene.Scene
 import javafx.stage.Stage
 import java.io.File
 
+/**
+ * 배포: https://github.com/FibreFoX/javafx-gradle-plugin 참고 실패함. deploy 브랜치에서 확인할 수 있음
+ */
 class MainStage : Application() {
     override fun start(stage: Stage) {
         val loader = FXMLLoader().also {
